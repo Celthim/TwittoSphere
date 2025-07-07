@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwittoSphere - Bienvenue</title>
+    <link rel="stylesheet" href="styles\shared.css" />
+    <link rel="stylesheet" href="styles\login.css" />
+</head>
+<body>
+    <div class="sphere-animation"></div>
+    
+    <div class="welcome-container" id="welcomeContainer">
+        <div class="logo">🌐 TwittoSphere</div>
+        
+        <h1 class="welcome-title">Bienvenue !</h1>
+        
+        <p class="welcome-subtitle">
+            Rejoignez la Sphère et partagez vos pensées avec la communauté. 
+            Connectez-vous, échangez et explorez un monde de conversations infinies.
+        </p>
+
+        <form id="joinForm">
+            <div class="form-group">
+                <label for="pseudo">Choisissez votre pseudo :</label>
+                <input type="text" id="pseudo" name="pseudo" placeholder="Votre pseudo unique..." maxlength="20" required>
+                <div class="error-message" id="errorMessage">
+                    Le pseudo doit contenir entre 3 et 20 caractères (lettres, chiffres et _ uniquement)
+                </div>
+            </div>
+
+            <button type="submit" class="action-button" id="joinButton">
+                🚀 Rejoindre la Sphère
+            </button>
+        </form>
+
+        <div class="features">
+            <h3>Découvrez TwittoSphere</h3>
+            <ul class="features-list">
+                <li>Partagez vos messages instantanément</li>
+                <li>Likez et commentez les publications</li>
+                <li>Rejoignez une communauté bienveillante</li>
+                <li>Interface simple et intuitive</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module" src="dist/login/login.js"></script>
+</body>
+</html>

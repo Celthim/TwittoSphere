@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>TwittoSphere</title>
+  <link rel="stylesheet" href="styles/shared.css" />
+  <link rel="stylesheet" href="styles/home.css" />
+</head>
+<body>
+
+  <header class="header-banner" id="banner">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="user-info">
+          <span class="welcome-text">Bienvenue,</span>
+          <span class="username" id="currentUser">Pseudo</span>
+        </div>
+        <div class="logo">🌐 TwittoSphere</div>
+      </div>
+      <button class="logout-button" id="logoutButton">Se déconnecter</button>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <div class="form-container">
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5"></textarea>
+
+        <button class="action-button send-button" id="send">Envoyer</button>
+    </div><br/>
+
+    <div class="message-container" id="messages_container">
+      
+    </div>
+  </div>
+  <script type="module" src="dist/home/home.js"></script>
+</body>
+</html>

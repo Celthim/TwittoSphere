@@ -1,0 +1,12 @@
+{
+  "name": "twitto-sphere",
+  "version": "1.0.0",
+  "description": "Un simple réseau social",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

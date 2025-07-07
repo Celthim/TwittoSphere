@@ -51,6 +51,11 @@
   gap: 0.33rem;
 }
 
+.user-avatar {
+  width: 64px;
+  height: 64px;
+}
+
 .welcome-text {
   font-size: 1rem;
   opacity: 0.9;
@@ -62,8 +67,13 @@
   font-size: 0.8rem;
 }
 
+.header-banner.scrolled .user-avatar {
+  width: 32px;
+  height: 32px;
+}
+
 .username {
-  font-size: 1.2rem;
+  font-size: 1.33rem;
   font-weight: bold;
   /* color: #ffd700; */
   color: #8de2ff;
@@ -71,7 +81,8 @@
 
 /* Username plus petit quand scrollé */
 .header-banner.scrolled .username {
-  font-size: 1rem;
+  font-size: 1.33rem;
+  padding-top: 6px;
 }
 
 .logout-button {
@@ -91,6 +102,7 @@
 .header-banner.scrolled .logout-button {
   padding: 0.3rem 0.8rem;
   font-size: 0.8rem;
+  margin-top: 6px;
 }
 
 .logout-button:hover {
@@ -101,7 +113,7 @@
 
 /* Ajuster le body pour tenir compte du bandeau fixe */
 body {
-  padding-top: 130px; /* Espace pour le bandeau fixe */
+  padding-top: 142px; /* Espace pour le bandeau fixe */
 }
 
 .form-container {
@@ -114,14 +126,13 @@ body {
 
 textarea {
   width: 99%;
+  min-height: 128px;
   margin-bottom: 1rem;
   font-size: 1rem;
   resize: vertical;
 }
 
 .send-button {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
   float: right;
   width: auto;
 }
@@ -151,10 +162,6 @@ textarea {
   margin-bottom: 1rem;
   position: relative;
 }
-
-/* .msg-date, .msg-name{
-  
-} */
 
 .name-holder {
   display: flex;
@@ -228,15 +235,13 @@ textarea {
   padding-left: 1rem;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease-out, padding 0.3s ease-out, background-color 0.3s ease-out;
+  transition: max-height 0.5s ease, padding 0.3s ease, background-color 0.3s ease;
 }
 
 .comments-container.open {
   opacity: 1;
   margin-top: 1rem;
-  height: 200px;
-  max-height: 500px;
-  background-color: red;
+  max-height: 2000px;
   display: block;
 }
 
@@ -250,23 +255,25 @@ textarea {
   margin-left: 1rem;
 }
 
-.comment-name {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #555;
-  margin-bottom: 0.3rem;
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 5px;
 }
 
-.comment-date {
-  float: right;
-  font-size: 0.7rem;
-  color: #888;
-  font-weight: normal;
-}
-
-.comment-body {
+.comment-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   font-size: 0.9rem;
-  color: #333;
-  margin: 0;
-  line-height: 1.4;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #667eea;
 }

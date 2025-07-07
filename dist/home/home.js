@@ -1,27 +1,31 @@
-import { fetch_messages, send_message_API } from "../utils/API.js";
+import { fetch_messages, get_avatar, send_message_API } from "../utils/API.js";
 import { create_message } from "./messages.js";
-const pseudo_input = document.getElementById("pseudo");
 const msg_area = document.getElementById("message");
 const send_button = document.getElementById("send");
+const logout_button = document.getElementById("logoutButton");
 const msg_container = document.getElementById("messages_container");
 const header = document.getElementById("banner");
-let lastScrollY = window.scrollY;
-window.addEventListener('scroll', function () {
-    const currentScrollY = window.scrollY;
-    // Si on scroll vers le bas de plus de 50px
-    if (currentScrollY > 50) {
-        header.classList.add('scrolled');
+const username_span = document.getElementById("currentUser");
+const user_avatar = document.getElementById("currentAvatar");
+export let username;
+// Init
+function load_username() {
+    const loaded_value = localStorage.getItem("username");
+    if (loaded_value === null) {
+        window.location.href = "index.html";
+        return;
     }
     else {
-        header.classList.remove('scrolled');
+        username = loaded_value;
+        username_span.textContent = username;
+        user_avatar.src = get_avatar(username);
     }
-    lastScrollY = currentScrollY;
-});
-// Optimisation : utiliser requestAnimationFrame pour de meilleures performances
+}
+//_________________________________
+// Animation Header onScroll
 let ticking = false;
 function updateHeader() {
-    const currentScrollY = window.scrollY;
-    if (currentScrollY > 50) {
+    if (window.scrollY > 50) {
         header.classList.add('scrolled');
     }
     else {
@@ -35,6 +39,8 @@ window.addEventListener('scroll', function () {
         ticking = true;
     }
 });
+//_________________________________
+// Handle messages
 async function refresh_messages() {
     const data = await fetch_messages();
     if (data) {
@@ -49,10 +55,18 @@ function add_message(data) {
     const new_msg = create_message(data);
     msg_container.appendChild(new_msg);
 }
+//_________________________________
+// Event listeners
 send_button.addEventListener("click", async (e) => {
     e.preventDefault();
-    send_message_API(pseudo_input.value, msg_area.value);
+    await send_message_API(username, msg_area.value);
     refresh_messages();
 });
+logout_button.addEventListener("click", () => {
+    localStorage.removeItem("username");
+    window.location.href = "index.html";
+});
+//_________________________________
+load_username();
 refresh_messages();
-setInterval(refresh_messages, 5000);
+// setInterval(refresh_messages,5000);

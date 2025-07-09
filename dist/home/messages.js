@@ -2,6 +2,7 @@ import { fetchComments, get_avatar, send_comment } from "../utils/API.js";
 import { username } from "./home.js";
 import { like_message, likes_ids } from "./likes.js";
 let dates = [];
+let curr_comments_msg = null;
 function pad(word, pad_size) {
     if (word.length > pad_size) {
         return word;
@@ -93,35 +94,17 @@ export function create_message(data, is_comment = false) {
     buttons_holder.appendChild(comments_button);
     buttons_holder.appendChild(like_button);
     msg.appendChild(buttons_holder);
-    const comments_container = document.createElement("div");
-    comments_container.classList.add("comments-container");
-    msg.appendChild(comments_container);
     comments_button.addEventListener("click", async () => {
         if (comments_container.classList.contains("open")) {
-            comments_container.classList.remove("open");
-            comments_button.classList.remove('open');
+            collapse_comments(msg, comments_container, comments_button);
         }
         else {
-            await compute_comments(msg);
-            setTimeout(() => {
-                comments_container.classList.add("open");
-                comments_button.classList.add('open');
-            }, 10);
+            expand_comments(msg, comments_container, comments_button);
         }
     });
-    return msg;
-}
-async function compute_comments(message) {
-    const did_load = message.getAttribute("data-did-load");
-    if (did_load !== null)
-        return;
-    message.setAttribute("data-did-load", "1");
-    const msg_id = Number(message.getAttribute("data-msg-id"));
-    const comments_container = message.querySelector(".comments-container");
-    const comments = await fetchComments(msg_id);
-    for (const comment of comments) {
-        comments_container.prepend(create_message(comment, true));
-    }
+    //Section commentaires
+    const comments_container = document.createElement("div");
+    comments_container.classList.add("comments-container");
     const send_comment_holder = document.createElement("div");
     send_comment_holder.classList.add("comment-form");
     const send_comment_input = document.createElement("input");
@@ -135,14 +118,140 @@ async function compute_comments(message) {
     send_comment_holder.appendChild(send_comment_button);
     comments_container.appendChild(send_comment_holder);
     send_comment_button.addEventListener("click", async () => {
-        const content = send_comment_input.value;
+        const content = send_comment_input.value.trim();
         if (content === "")
             return;
-        send_comment(msg_id, username, content);
+        send_comment(data.id, username, content);
         const timestamp = (new Date()).toISOString();
-        send_comment_holder.before(create_message({ message_id: msg_id, username: username, content: content, created_at: timestamp, updated_at: timestamp }, true));
+        const comment_data = {
+            id: -1,
+            message_id: data.id,
+            username: username,
+            content: content,
+            created_at: timestamp,
+            updated_at: timestamp
+        };
+        send_comment_holder.before(create_message(comment_data, true));
         send_comment_input.value = "";
     });
+    msg.appendChild(comments_container);
+    return msg;
+}
+async function expand_comments(message, container, button) {
+    if (container === undefined)
+        container = message.querySelector(".comments-container");
+    if (container.classList.contains("open"))
+        return;
+    if (button === undefined)
+        button = message.querySelector(".comment-button");
+    const did_load = message.getAttribute("data-did-load");
+    let do_scroll = false;
+    if (did_load === null) {
+        do_scroll = await compute_comments(message);
+        message.setAttribute("data-did-load", "1");
+    }
+    else {
+        compute_comments(message);
+    }
+    if (curr_comments_msg != null) {
+        collapse_comments(curr_comments_msg);
+    }
+    curr_comments_msg = message;
+    setTimeout(() => {
+        container === null || container === void 0 ? void 0 : container.classList.add("open");
+        button === null || button === void 0 ? void 0 : button.classList.add('open');
+        if (do_scroll)
+            window.scrollBy(0, -container.clientHeight);
+    }, 10);
+}
+function collapse_comments(message, container, button) {
+    if (container === undefined)
+        container = message.querySelector(".comments-container");
+    if (!container.classList.contains("open"))
+        return;
+    if (button === undefined)
+        button = message.querySelector(".comment-button");
+    curr_comments_msg = null;
+    container === null || container === void 0 ? void 0 : container.classList.remove("open");
+    button === null || button === void 0 ? void 0 : button.classList.remove('open');
+}
+async function compute_comments(message) {
+    const msg_id = Number(message.getAttribute("data-msg-id"));
+    const comments_container = message.querySelector(".comments-container");
+    const send_comment_holder = message.querySelector(".comment-form");
+    const comments = await fetchComments(msg_id);
+    sync_messages(comments_container, comments);
+    for (let i = 0; i < comments.length; i++) {
+        const reverse_i = comments.length - 1 - i;
+        const comment = comments[reverse_i];
+        insert_comment(comments_container, comment, send_comment_holder);
+    }
+    return comments.length > 0;
+}
+function insert_comment(container, data, next_sibling) {
+    insert_message(container, data, next_sibling, false, true);
+}
+export function insert_message(container, data, next_sibling, append = true, is_comment = false) {
+    let is_present = false;
+    const base_sibling = next_sibling;
+    for (const child of container.children) {
+        const comment_id = child.getAttribute("data-msg-id");
+        if (comment_id === null)
+            continue;
+        if (Number(comment_id) > data.id) {
+            next_sibling = child;
+            break;
+        }
+        else if (Number(comment_id) === data.id) {
+            is_present = true;
+            break;
+        }
+    }
+    if (!is_present) {
+        if (append && next_sibling == base_sibling) {
+            next_sibling.appendChild(create_message(data, is_comment));
+        }
+        else {
+            next_sibling.before(create_message(data, is_comment));
+        }
+    }
+}
+// Messages&Comments being generated on client's side when sent, we need to sync them up with the right ID when we refresh them. That way we can reorganized them temporaly and make sure we don't show the same again.
+export function sync_messages(container, fetched_data) {
+    for (const child of container.children) {
+        const local_id = child.getAttribute("data-msg-id");
+        // On check si l'on trouve un ID à -1, qui sont ceux générés localements qui nécessitent d'être sync
+        if (local_id === null || local_id !== "-1")
+            continue;
+        const date_span = child.querySelector(".msg-date");
+        if (date_span === null)
+            continue;
+        // On récupère le timestamp sur l'élément HTML directement (généré localement pour les msg&coms envoyés)
+        const timestamp = date_span.getAttribute("data-timestamp");
+        if (timestamp === null)
+            continue;
+        //On compare avec les timestamps récupéré depuis le serveur, avec une fenêtre d'1 minute pour prendre en compte le délai qui a pu se produire entre la génération en local et son envoie sur le serveur
+        for (const comment of fetched_data) {
+            const localMs = new Date(timestamp).getTime();
+            const remoteMs = new Date(comment.created_at).getTime();
+            // Si l'on trouve une data distante avec 1mn max de décalage avec le local, on compare les corps de message et si on match on resync en attribuant le bon ID et le bon timestamp
+            if (Math.abs(localMs - remoteMs) < 60000.0) {
+                const msg_body = child.querySelector(".msg-body");
+                if (msg_body === null)
+                    continue;
+                const msg = msg_body.textContent;
+                if (msg !== null && msg == comment.content) {
+                    child.setAttribute("data-msg-id", String(comment.id));
+                    date_span.setAttribute("data-timestamp", comment.created_at);
+                }
+            }
+        }
+    }
+}
+function refresh_comments() {
+    if (curr_comments_msg !== null) {
+        compute_comments(curr_comments_msg);
+    }
 }
 function refresh_dates() {
     for (const span_date of dates) {
@@ -150,3 +259,4 @@ function refresh_dates() {
     }
 }
 setInterval(refresh_dates, 1000);
+setInterval(refresh_comments, 10000);

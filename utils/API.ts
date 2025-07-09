@@ -48,8 +48,8 @@ export async function send_message_API(username:string, content:string) {
     });
 }
 
-export async function fetch_messages():Promise<MessagesData|null>{
-    const res : Response = await fetch(API_URL+"messages");
+export async function fetch_messages(page:number=4):Promise<MessagesData|null>{
+    const res : Response = await fetch(API_URL+`messages?page=${page}`);
     
     if(res.ok){
         const data = await res.json();

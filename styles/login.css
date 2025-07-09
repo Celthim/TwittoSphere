@@ -3,33 +3,35 @@ body {
     overflow: hidden;
 }
 
-.welcome-container {
-    background: white;
-    padding: 3rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
-}
-
 .logo {
+    display: flex;
+    align-items: center;
     font-size: 3rem;
     margin-bottom: 1rem;
     color: #667eea;
     font-weight: bold;
 }
 
+.welcome-container {
+    background: var(--bg-primary);
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
 .welcome-title {
     font-size: 2.5rem;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     font-weight: bold;
 }
 
 .welcome-subtitle {
     font-size: 1.2rem;
-    color: #666;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
     line-height: 1.5;
 }
@@ -46,12 +48,13 @@ body {
 }
 
 .features {
-    padding-top: 1rem;
+    margin-top: 1.5rem;
+    /* padding-top: 1rem; */
     border-top: 1px solid #eee;
 }
 
 .features h3 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     font-size: 1.3rem;
 }
@@ -63,7 +66,7 @@ body {
 }
 
 .features-list li {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 1rem;
 }
 
@@ -79,15 +82,10 @@ body {
     display: none;
 }
 
-.sphere-animation {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: rgba(102, 126, 234, 0.1);
-    border-radius: 50%;
-    animation: float 3s ease-in-out infinite;
+
+
+.theme-toggle {
+    margin-bottom: 15px;
 }
 
 @keyframes float {

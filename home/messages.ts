@@ -2,8 +2,9 @@ import { Comment, fetchComments, get_avatar, MessageData, send_comment } from ".
 import { username } from "./home.js";
 import { like_message, likes_ids } from "./likes.js";
 
-
 let dates : HTMLSpanElement[] = [];
+
+let curr_comments_msg : HTMLDivElement|null = null;
 
 function pad(word:string,pad_size:number):string{
     if(word.length>pad_size){
@@ -116,44 +117,20 @@ export function create_message(data:MessageData|Comment, is_comment : boolean = 
     buttons_holder.appendChild(like_button);
     
     msg.appendChild(buttons_holder);
-    
-    const comments_container: HTMLDivElement = document.createElement("div");
-    comments_container.classList.add("comments-container");
-    
-    msg.appendChild(comments_container);
 
     comments_button.addEventListener("click", async () => {
         if(comments_container.classList.contains("open")){
-            comments_container.classList.remove("open");
-            comments_button.classList.remove('open');
+            collapse_comments(msg,comments_container,comments_button);
         }
         else{
-            await compute_comments(msg);
-            setTimeout( () => {
-                comments_container.classList.add("open");
-                comments_button.classList.add('open');
-            }, 10 );
+            expand_comments(msg,comments_container,comments_button);
         }
     });
     
-    return msg;
-}
+    //Section commentaires
+    const comments_container: HTMLDivElement = document.createElement("div");
+    comments_container.classList.add("comments-container");
 
-
-async function compute_comments(message:HTMLDivElement):Promise<void>{
-
-    const did_load : string|null = message.getAttribute("data-did-load");
-    if(did_load !== null) return;
-
-    message.setAttribute("data-did-load","1");
-    const msg_id : number = Number(message.getAttribute("data-msg-id"));
-    const comments_container : HTMLDivElement = message.querySelector(".comments-container") as HTMLDivElement;
-
-    const comments : Comment[] = await fetchComments(msg_id);
-
-    for(const comment of comments){
-        comments_container.prepend(create_message(comment,true));
-    }
 
     const send_comment_holder : HTMLDivElement = document.createElement("div");
     send_comment_holder.classList.add("comment-form");
@@ -173,15 +150,173 @@ async function compute_comments(message:HTMLDivElement):Promise<void>{
     comments_container.appendChild(send_comment_holder);
 
     send_comment_button.addEventListener("click", async () => {
-        const content : string = send_comment_input.value;
+        const content : string = send_comment_input.value.trim();
         if(content==="") return;
-        send_comment(msg_id,username,content);
+        send_comment(data.id,username,content);
+
         const timestamp : string = (new Date()).toISOString();
-        send_comment_holder.before(create_message({message_id:msg_id,username:username,content:content,created_at:timestamp,updated_at:timestamp} as Comment,true));
+        const comment_data : Comment = {
+            id : -1,
+            message_id:data.id,
+            username:username,
+            content:content,
+            created_at:timestamp,
+            updated_at:timestamp
+        };
+        send_comment_holder.before(create_message(comment_data,true));
         send_comment_input.value = "";
     });
+    
+    msg.appendChild(comments_container);
+    
+    return msg;
 }
 
+async function expand_comments(message:HTMLDivElement,container?:HTMLDivElement,button?:HTMLButtonElement) {
+    if(container===undefined) container = message.querySelector(".comments-container") as HTMLDivElement;
+    if(container.classList.contains("open")) return;
+
+    if(button===undefined) button = message.querySelector(".comment-button") as HTMLButtonElement;
+
+    const did_load : string|null = message.getAttribute("data-did-load");
+    let do_scroll : boolean = false;
+    if(did_load===null){
+        do_scroll = await compute_comments(message);
+        message.setAttribute("data-did-load","1");
+    }
+    else{
+        compute_comments(message);
+    }
+    
+    if(curr_comments_msg!=null){
+        collapse_comments(curr_comments_msg);
+    }
+    curr_comments_msg = message;
+    
+    setTimeout( () => {
+        container?.classList.add("open");
+        button?.classList.add('open');
+        if(do_scroll) window.scrollBy(0,-container.clientHeight);
+    }, 10 );
+}
+
+function collapse_comments(message:HTMLDivElement,container?:HTMLDivElement,button?:HTMLButtonElement):void {
+    if(container===undefined) container = message.querySelector(".comments-container") as HTMLDivElement;
+    if(!container.classList.contains("open")) return;
+
+    if(button===undefined) button = message.querySelector(".comment-button") as HTMLButtonElement;
+
+    curr_comments_msg = null;
+
+    container?.classList.remove("open");
+    button?.classList.remove('open');
+}
+
+async function compute_comments(message:HTMLDivElement):Promise<boolean>{
+    
+    const msg_id : number = Number(message.getAttribute("data-msg-id"));
+    const comments_container : HTMLDivElement = message.querySelector(".comments-container") as HTMLDivElement;
+    const send_comment_holder : HTMLDivElement = message.querySelector(".comment-form") as HTMLDivElement;
+    
+    const comments : Comment[] = await fetchComments(msg_id);
+
+    sync_messages(comments_container,comments);
+    
+    for(let i = 0; i<comments.length; i++){
+        const reverse_i : number = comments.length - 1 - i;
+        const comment : Comment = comments[reverse_i];
+        insert_comment(comments_container,comment,send_comment_holder);
+    }
+
+    return comments.length>0;
+    
+}
+
+function insert_comment(container:HTMLDivElement,data:Comment,next_sibling:Element){
+    insert_message(container,data,next_sibling,false,true);
+}
+
+export function insert_message(container:HTMLDivElement,data:MessageData|Comment,
+                                next_sibling:Element,append=true,is_comment=false):void{
+    
+    let is_present : boolean = false;
+    const base_sibling = next_sibling;
+    
+    for(const child of container.children){
+    
+        const comment_id : string|null = child.getAttribute("data-msg-id");
+        if(comment_id===null) continue;
+    
+        if(Number(comment_id)>data.id){
+            next_sibling = child;
+            break;
+        }
+        else if(Number(comment_id)===data.id){
+            is_present = true;
+            break;
+        }
+    
+    }
+    
+    if(!is_present){
+        if(append && next_sibling==base_sibling){
+            next_sibling.appendChild(create_message(data,is_comment));
+        }
+        else{
+            next_sibling.before(create_message(data,is_comment));
+        }
+    } 
+
+}
+
+// Messages&Comments being generated on client's side when sent, we need to sync them up with the right ID when we refresh them. That way we can reorganized them temporaly and make sure we don't show the same again.
+export function sync_messages(container:HTMLDivElement,fetched_data:MessageData[]|Comment[]):void{
+
+    for(const child of container.children){
+
+        const local_id : string|null = child.getAttribute("data-msg-id");
+        
+        // On check si l'on trouve un ID à -1, qui sont ceux générés localements qui nécessitent d'être sync
+        if(local_id===null || local_id!=="-1") continue;
+
+        const date_span : HTMLSpanElement|null = child.querySelector(".msg-date");
+        
+        if(date_span===null) continue;
+
+        // On récupère le timestamp sur l'élément HTML directement (généré localement pour les msg&coms envoyés)
+        const timestamp : string|null = date_span.getAttribute("data-timestamp"); 
+        
+        if(timestamp===null) continue;
+        
+        //On compare avec les timestamps récupéré depuis le serveur, avec une fenêtre d'1 minute pour prendre en compte le délai qui a pu se produire entre la génération en local et son envoie sur le serveur
+        for(const comment of fetched_data){
+            const localMs : number = new Date(timestamp).getTime();
+            const remoteMs : number = new Date(comment.created_at).getTime();
+            
+            // Si l'on trouve une data distante avec 1mn max de décalage avec le local, on compare les corps de message et si on match on resync en attribuant le bon ID et le bon timestamp
+            if(Math.abs(localMs-remoteMs)<60000.0){
+                const msg_body : HTMLParagraphElement|null = child.querySelector(".msg-body");
+
+                if(msg_body===null) continue;
+
+                const msg : string|null = msg_body.textContent;
+                
+
+                if(msg!==null && msg==comment.content){
+                    child.setAttribute("data-msg-id",String(comment.id));
+                    date_span.setAttribute("data-timestamp",comment.created_at);
+                }
+            }
+        }
+    }
+
+}
+
+function refresh_comments():void{
+    if(curr_comments_msg!==null){
+        compute_comments(curr_comments_msg);
+    }
+}
 
 function refresh_dates():void{
     for(const span_date of dates){
@@ -190,3 +325,4 @@ function refresh_dates():void{
 }
 
 setInterval(refresh_dates,1000);
+setInterval(refresh_comments,10000);

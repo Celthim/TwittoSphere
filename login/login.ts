@@ -1,7 +1,12 @@
+import { load_theme, toggle_theme } from "../utils/theme.js";
+
 const form : HTMLFormElement = document.getElementById('joinForm') as HTMLFormElement;
 const pseudoInput : HTMLInputElement = document.getElementById('pseudo') as HTMLInputElement;
 const joinButton : HTMLButtonElement = document.getElementById('joinButton') as HTMLButtonElement;
 const errorMessage : HTMLDivElement = document.getElementById('errorMessage') as HTMLDivElement;
+
+const toggle_button : HTMLButtonElement = document.getElementById("themeToggleBtn") as HTMLButtonElement;
+
 
 // Validation en temps réel
 pseudoInput.addEventListener('input', function() {
@@ -22,6 +27,8 @@ function validateUsername(pseudo : string) : boolean {
     const regex : RegExp = /^[a-zA-Z0-9_]{3,20}$/; // Entre 3 et 20 caractères alphanumériques
     return regex.test(pseudo);
 }
+
+
 
 // Soumission du formulaire
 form.addEventListener('submit', function(e) {
@@ -46,6 +53,8 @@ form.addEventListener('submit', function(e) {
     }, 1500);
 });
 
+
+
 // Vérifier si l'utilisateur est déjà connecté
 window.addEventListener('load', function() {
     const savedPseudo = localStorage.getItem('username');
@@ -56,11 +65,18 @@ window.addEventListener('load', function() {
         const container : HTMLDivElement = document.getElementById('welcomeContainer') as HTMLDivElement;
         container.style.opacity = '0';
         container.style.transform = 'translateY(1000px)';
-        container.style.transition = 'all 0.5s ease';
         
         setTimeout(() => {
+            container.style.transition = 'all 0.5s ease';
             container.style.opacity = '1';
             container.style.transform = 'translateY(0)';
         }, 100);
     }
 });
+
+
+toggle_button.addEventListener("click", () => {
+    toggle_theme(toggle_button);
+});
+
+load_theme(toggle_button);

@@ -1,6 +1,6 @@
 /* Styles du bandeau */
 .header-banner {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: var(--gradient-secondary);
   color: white;
   position: fixed;
   top: 0;
@@ -8,7 +8,7 @@
   
   padding: 2rem;
   border-radius: 0 0px 10px 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px var(--shadow-color);
   width: 70%;
 
   transition: padding 0.3s ease, transform 0.3s ease, font-size 0.3s ease, gap 0.3s ease;
@@ -20,29 +20,29 @@
   transform: translateY(-12px);
 }
 
-.header-content {
-  display: flex;
-  align-items: center;
-}
-
 .header-left {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap:19em;
+  /* gap:19em; */
 }
 
-.header-banner .logo {
+.logo {
+  flex:1;
   font-size: 1.8rem;
   font-weight: bold;
   color: white;
+  display: flex;
 }
 
 .header-banner.scrolled .logo {
   font-size: 1.5rem;
 }
 
-.header-banner.scrolled .header-left {
-  gap:22rem;
+.header-banner.scrolled .theme-toggle {
+  width: 40px;
+  height: 40px;
+  font-size: 1.0rem;
 }
 
 .user-info {
@@ -143,20 +143,26 @@ textarea {
   align-items: center;
   gap: 1rem;
   padding-top: 2rem;
+  width : 100%;
 }
 
 .form-container,
 .message-container {
-  background: white;
+  background: var(--bg-primary);
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px var(--shadow-color);
   width: 60%;
 }
 
+.message-container {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .message {
-  border: 1px solid #ccc;
-  background: #f9f9f9;
+  border: 1px solid var(--border-color);
+  background: var(--message-bg);
   padding: 1rem;
   border-radius: 5px;
   margin-bottom: 1rem;
@@ -180,7 +186,7 @@ textarea {
 
 .msg-name {
   font-size: 1.6rem;
-  color: #604e4e;
+  color: var(--text-primary);
   margin: 0;
   flex-grow: 1;
 }
@@ -188,10 +194,11 @@ textarea {
 .msg-date{
   float:right;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .msg-body {
+  color: var(--text-primary);
   padding-left: 64px;
   margin: 1%;
 }
@@ -207,10 +214,10 @@ textarea {
   max-height: 30px;
   padding: 0.3rem 0.8rem;
   font-size: 0.9rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
-  background-color: #f8f8f8;
-  color: #333;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   margin-top: 0.5rem;
   transition: background-color 0.2s;
@@ -222,7 +229,7 @@ textarea {
 }
 
 .like-button:hover, .comment-button:hover {
-  background-color: #e0e0e0;
+  background-color: var(--bg-tertiary);
 }
 
 .comment-button.open {
@@ -231,24 +238,36 @@ textarea {
 
 /* Container des commentaires */
 .comments-container {
-  border-left: 3px solid #ddd;
+  border-left: 3px solid var(--border-color);
   padding-left: 1rem;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s ease, padding 0.3s ease, background-color 0.3s ease;
+  /* transition: max-height 0.25s ease-in, padding 0.3s ease, background-color 0.3s ease; */
+}
+
+.comments-container .comment{
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
 }
 
 .comments-container.open {
   opacity: 1;
   margin-top: 1rem;
-  max-height: 2000px;
+  max-height: none;
   display: block;
+}
+
+.comments-container.open .comment{
+  max-height: 200000px;
+  opacity: 1;
+  overflow: visible;
 }
 
 /* Style des commentaires individuels */
 .comment {
-  background: #f0f0f0;
-  border: 1px solid #e0e0e0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
   border-radius: 5px;
   padding: 0.8rem;
   margin-bottom: 0.8rem;
@@ -261,14 +280,16 @@ textarea {
   align-items: center;
   margin-top: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 5px;
 }
 
 .comment-input {
+  background: var(--input-bg);
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 4px;
   font-size: 0.9rem;
 }

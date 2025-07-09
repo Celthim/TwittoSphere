@@ -1,0 +1,353 @@
+/* =================================
+   RESPONSIVE LOGIN PAGE
+   ================================= */
+
+/* Tablettes (768px et moins) */
+@media (max-width: 768px) {
+  .welcome-container {
+    width: 90%;
+    padding: 2rem 1.5rem;
+    margin: 1rem auto;
+  }
+  
+  .logo {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .welcome-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  
+  .theme-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-bottom: 0;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .action-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .features h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .features-list li {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  input[type="text"] {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .error-message {
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+  }
+}
+
+/* Smartphones (480px et moins) */
+@media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+  
+  .welcome-container {
+    width: 95%;
+    padding: 1.5rem 1rem;
+    margin: 0.5rem auto;
+    border-radius: 10px;
+  }
+  
+  .logo {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  .header-content {
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  
+  .theme-toggle {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+  }
+  
+  .action-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+  }
+  
+  .features {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  
+  .features h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .features-list li {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+  
+  input[type="text"] {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+  
+  label {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .error-message {
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+}
+
+/* Très petits écrans (320px et moins) */
+@media (max-width: 320px) {
+  body {
+    padding: 0.3rem;
+  }
+  
+  .welcome-container {
+    width: 98%;
+    padding: 1rem 0.8rem;
+    margin: 0.3rem auto;
+    border-radius: 8px;
+  }
+  
+  .logo {
+    font-size: 1.7rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.2;
+  }
+  
+  .theme-toggle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+  
+  .action-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .features {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+  }
+  
+  .features h3 {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  
+  .features-list li {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  input[type="text"] {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .error-message {
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+  }
+}
+
+/* Orientation paysage sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  body {
+    padding: 0.5rem;
+  }
+  
+  .welcome-container {
+    width: 85%;
+    padding: 1rem 1.5rem;
+    margin: 0.5rem auto;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  
+  .theme-toggle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+  
+  .features {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+  }
+  
+  .features h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .features-list li {
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .action-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Écrans moyens (768px à 1024px) - Garder les styles originaux */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Pas de modifications, on garde les styles CSS originaux */
+}
+
+/* Très grands écrans (1400px et plus) - Garder les styles originaux */
+@media (min-width: 1400px) {
+  /* Pas de modifications, on garde les styles CSS originaux */
+}
+
+/* Corrections pour les très petites hauteurs d'écran */
+@media (max-height: 600px) {
+  .welcome-container {
+    margin: 0.5rem auto;
+    padding: 1rem;
+  }
+  
+  .logo {
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-subtitle {
+    margin-bottom: 1rem;
+  }
+  
+  .features {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 0.8rem;
+  }
+  
+  .theme-toggle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+}

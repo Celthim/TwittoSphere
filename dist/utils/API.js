@@ -13,8 +13,8 @@ export async function send_message_API(username, content) {
         })
     });
 }
-export async function fetch_messages() {
-    const res = await fetch(API_URL + "messages");
+export async function fetch_messages(page = 4) {
+    const res = await fetch(API_URL + `messages?page=${page}`);
     if (res.ok) {
         const data = await res.json();
         return data;

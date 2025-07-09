@@ -1,8 +1,9 @@
-"use strict";
+import { load_theme, toggle_theme } from "../utils/theme.js";
 const form = document.getElementById('joinForm');
 const pseudoInput = document.getElementById('pseudo');
 const joinButton = document.getElementById('joinButton');
 const errorMessage = document.getElementById('errorMessage');
+const toggle_button = document.getElementById("themeToggleBtn");
 // Validation en temps réel
 pseudoInput.addEventListener('input', function () {
     const pseudo = this.value.trim();
@@ -48,10 +49,14 @@ window.addEventListener('load', function () {
         const container = document.getElementById('welcomeContainer');
         container.style.opacity = '0';
         container.style.transform = 'translateY(1000px)';
-        container.style.transition = 'all 0.5s ease';
         setTimeout(() => {
+            container.style.transition = 'all 0.5s ease';
             container.style.opacity = '1';
             container.style.transform = 'translateY(0)';
         }, 100);
     }
 });
+toggle_button.addEventListener("click", () => {
+    toggle_theme(toggle_button);
+});
+load_theme(toggle_button);
